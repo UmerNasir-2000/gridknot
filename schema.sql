@@ -12,16 +12,16 @@ CREATE SCHEMA IF NOT EXISTS gridknot;
 -- Purpose: Holds the list of valid API keys that can access the system.
 -- ============================================================
 CREATE TABLE IF NOT EXISTS gridknot.api_keys (
-    api_key VARCHAR(15) PRIMARY KEY  -- Unique identifier for an API client
+    api_key VARCHAR(63) PRIMARY KEY  -- Unique identifier for an API client
 );
 
 -- ============================================================
--- Table: request_api_log
+-- Table: request_api_logs
 -- Purpose: Logs each API request made by clients, tracking its status and timestamps.
 -- ============================================================
-CREATE TABLE IF NOT EXISTS gridknot.request_api_log (
+CREATE TABLE IF NOT EXISTS gridknot.request_api_logs (
     request_api_log_id INTEGER PRIMARY KEY,  -- Unique identifier for the request log entry
-    api_key VARCHAR(15) NOT NULL REFERENCES gridknot.api_keys(api_key),  -- Links request to a valid API key
+    api_key VARCHAR(63) NOT NULL REFERENCES gridknot.api_keys(api_key),  -- Links request to a valid API key
     status VARCHAR(15) NOT NULL CHECK (status IN ('BLOCKED', 'PROCESSED')),  -- Only allows valid status values
     expires_on TIMESTAMP NOT NULL DEFAULT NOW() + INTERVAL '1 hour',  -- Expiration time for the request log
     created_at TIMESTAMP NOT NULL DEFAULT NOW()  -- Timestamp when the log was created
