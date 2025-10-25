@@ -1,10 +1,9 @@
 from typing import Callable, Awaitable
 
-from fastapi import Request, Response, Depends
+from fastapi import Request, Response, HTTPException, status
 from sqlalchemy.orm import Session
 
 from src.database.connection import SessionLocal
-from src.entities.api_key import ApiKey
 
 
 async def rate_limiting_middleware(
@@ -12,8 +11,14 @@ async def rate_limiting_middleware(
         call_next: Callable[[Request], Awaitable[Response]]) -> Response:
     db: Session = SessionLocal()
     try:
-        rows = db.query(ApiKey).all()
-        print(rows)
+        api_key = request.headers.get("X-API-KEY", None)
+
+        if api_key is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Missing X-API-KEY header"
+            )
+
         response = await call_next(request)
     finally:
         db.close()
