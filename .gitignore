@@ -1,2 +1,9 @@
-*.venv
-.idea
+# Python virtual env
+.venv/
+
+# PyCharm settings
+.idea/
+
+# Environment variables
+.env
+.env.*
